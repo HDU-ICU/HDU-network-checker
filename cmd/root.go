@@ -31,6 +31,7 @@ func init() {
 		verbose, _ := cmd.Flags().GetBool("verbose")
 		if verbose {
 			log.Init(zap.DebugLevel)
+			log.Logger.Debug("Verbose output enabled")
 		} else {
 			log.Init(zap.InfoLevel)
 		}
