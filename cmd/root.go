@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 
+	"github.com/ljcbaby/HDU-network-checker/checker"
 	"github.com/ljcbaby/HDU-network-checker/log"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
@@ -11,6 +12,9 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use: "checker",
+	Run: func(cmd *cobra.Command, args []string) {
+		checker.BasicCheck()
+	},
 }
 
 func Execute() {
