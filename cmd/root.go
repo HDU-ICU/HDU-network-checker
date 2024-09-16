@@ -26,6 +26,7 @@ func Execute() {
 }
 
 func init() {
+	cobra.MousetrapHelpText = ""
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Verbose output")
 	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
 		verbose, _ := cmd.Flags().GetBool("verbose")
