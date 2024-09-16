@@ -104,7 +104,7 @@ func BasicCheck() {
 		baseUrl += "portal.hdu.edu.cn"
 	}
 
-	log.Logger.Sugar().Debugf("认证页面地址：%s", baseUrl)
+	log.Logger.Sugar().Debugf("AAA 地址：%s", baseUrl)
 
 	// Check AAA auth status
 	api := baseUrl + "/cgi-bin/rad_user_info"
@@ -122,4 +122,35 @@ func BasicCheck() {
 			log.Logger.Sugar().Infof("%s 已认证", studentNumber)
 		}
 	}
+
+	// Check connection to Internet
+	p, err = utils.Ping("223.5.5.5")
+	if err != nil {
+		log.Logger.Sugar().Errorf("Ping 失败：%v", err)
+	} else {
+		if p == 4 {
+			log.Logger.Error("无法连接到 阿里DNS主")
+			log.Logger.Error("请检查代拨上线情况，或尝试重新绑定")
+			log.Logger.Sugar().Errorf("认证页面地址：%s", baseUrl)
+			os.Exit(0)
+		} else if p > 0 {
+			log.Logger.Warn("到 阿里DNS主 的连接存在丢包")
+		} else {
+			log.Logger.Info("连接到 阿里DNS主 正常")
+		}
+	}
+
+	// Check connection to Internet
+	resp, err = utils.Get("http://connect.rom.miui.com/generate_204")
+	if err != nil {
+		if strings.Contains(err.Error(), "204") {
+			log.Logger.Info("连接到外网正常")
+		} else {
+			log.Logger.Sugar().Errorf("连接到外网失败：%v", err)
+		}
+	} else {
+		log.Logger.Sugar().Infof("204 返回异常：%s", resp)
+	}
+
+	log.Logger.Info("基本检查完成，无异常")
 }

@@ -28,6 +28,13 @@ func Get(url string) (string, error) {
 
 	log.Logger.Sugar().Debugf("Response: %+v", resp)
 
+	if resp.StatusCode != http.StatusOK {
+		if resp.StatusCode == http.StatusNoContent {
+			return "", fmt.Errorf("204")
+		}
+		return "", fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
 	// Read the response body
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
