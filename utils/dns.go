@@ -24,5 +24,5 @@ func Reslove(domin string, server string) (*net.IPAddr, error) {
 	if len(r.Answer) == 0 {
 		return nil, errors.New("no_answer")
 	}
-	return &net.IPAddr{IP: r.Answer[0].(*dns.A).A}, nil
+	return &net.IPAddr{IP: r.Answer[len(r.Answer)-1].(*dns.A).A}, nil
 }
