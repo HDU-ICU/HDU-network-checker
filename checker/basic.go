@@ -107,19 +107,48 @@ func BasicCheck() {
 	log.Logger.Sugar().Debugf("AAA 地址：%s", baseUrl)
 
 	// Check AAA auth status
-	api := baseUrl + "/cgi-bin/rad_user_info"
-	resp, err := utils.Get(api)
+	api, err := utils.GetAAAInfo(baseUrl)
 	if err != nil {
 		log.Logger.Sugar().Errorf("认证状态获取失败：%v", err)
 	} else {
-		if resp == "not_online_error" {
+		if api.Error == "not_online_error" {
 			log.Logger.Error("深澜未认证，请打开下方链接进行认证")
 			log.Logger.Sugar().Errorf("认证页面地址：%s", baseUrl)
 			os.Exit(0)
 		} else {
-			// read student Number from response head to first ,
-			studentNumber := strings.Split(resp, ",")[0]
-			log.Logger.Sugar().Infof("%s 已认证", studentNumber)
+			log.Logger.Sugar().Infof("%s 已认证 %s，在线设备数 %s", api.UserName, api.ProductsName, api.OnlineDeviceTotal)
+		}
+	}
+
+	// ISP gateway check
+	switch api.ProductsId {
+	case "3": // 3: 联通
+		log.Logger.Warn("缺少联通网关信息")
+	case "4": // 4: 电信
+		p, err = utils.Ping("60.176.40.1")
+		if err != nil {
+			log.Logger.Sugar().Errorf("Ping 失败：%v", err)
+		} else {
+			if p == 4 {
+				log.Logger.Warn("无法连接到 电信网关")
+			} else if p > 0 {
+				log.Logger.Warn("到 电信网关 的连接存在丢包")
+			} else {
+				log.Logger.Info("连接到 电信网关 正常")
+			}
+		}
+	case "5": // 5: 移动
+		p, err = utils.Ping("10.106.0.1")
+		if err != nil {
+			log.Logger.Sugar().Errorf("Ping 失败：%v", err)
+		} else {
+			if p == 4 {
+				log.Logger.Warn("无法连接到 移动网关")
+			} else if p > 0 {
+				log.Logger.Warn("到 移动网关 的连接存在丢包")
+			} else {
+				log.Logger.Info("连接到 移动网关 正常")
+			}
 		}
 	}
 
@@ -141,7 +170,7 @@ func BasicCheck() {
 	}
 
 	// Check connection to Internet
-	resp, err = utils.Get("http://connect.rom.miui.com/generate_204")
+	resp, err := utils.Get("http://connect.rom.miui.com/generate_204")
 	if err != nil {
 		if strings.Contains(err.Error(), "204") {
 			log.Logger.Info("连接到外网正常")
