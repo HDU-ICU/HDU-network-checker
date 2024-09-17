@@ -15,8 +15,12 @@ func IfaceCheck() (bool, error) {
 	}
 
 	for _, iface := range interfaces {
+		// if flags without up or lookback, skip
+		if iface.Flags&net.FlagUp == 0 || iface.Flags&net.FlagLoopback != 0 {
+			continue
+		}
+
 		log.Logger.Sugar().Infof("Interface %s", iface.Name)
-		log.Logger.Sugar().Infof("  Interface status: %v", iface.Flags.String())
 		log.Logger.Sugar().Infof("  Hardware addr: %s", iface.HardwareAddr.String())
 
 		addrs, err := iface.Addrs()
