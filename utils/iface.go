@@ -16,6 +16,7 @@ func IfaceCheck() (bool, error) {
 
 	for _, iface := range interfaces {
 		log.Logger.Sugar().Infof("Interface %s", iface.Name)
+		log.Logger.Sugar().Infof("  Interface status: %v", iface.Flags.String())
 		log.Logger.Sugar().Infof("  Hardware addr: %s", iface.HardwareAddr.String())
 
 		addrs, err := iface.Addrs()
