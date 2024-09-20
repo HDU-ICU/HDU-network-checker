@@ -1,6 +1,7 @@
 package checker
 
 import (
+	"fmt"
 	"net"
 	"os"
 	"strings"
@@ -192,5 +193,10 @@ func BasicCheck() {
 	}
 
 	log.Logger.Info("基本检查完成，无异常")
+
+	// pause
+	log.Logger.Info("按任意键退出")
+	fmt.Scanln()
+
 	os.Exit(0)
 }
