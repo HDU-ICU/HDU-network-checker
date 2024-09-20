@@ -18,8 +18,14 @@ func BasicCheck() {
 	if err != nil {
 		log.Logger.Sugar().Errorf("获取网卡信息失败：%v", err)
 	} else {
-		if iface {
+		switch iface {
+		case 0:
+			log.Logger.Info("IP 地址正确")
+		case 1:
 			log.Logger.Warn("IP 地址不在校园网内，如有路由器请忽略")
+		case 2:
+			log.Logger.Error("未找到有效网卡，请检查网络连接")
+			os.Exit(0)
 		}
 	}
 

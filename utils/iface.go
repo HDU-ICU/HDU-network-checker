@@ -6,18 +6,22 @@ import (
 	"github.com/ljcbaby/HDU-network-checker/log"
 )
 
-func IfaceCheck() (bool, error) {
-	flag := true
+func IfaceCheck() (int, error) {
+	flag := 2
 
 	interfaces, err := net.Interfaces()
 	if err != nil {
-		return false, err
+		return flag, err
 	}
 
 	for _, iface := range interfaces {
 		// if flags without up or lookback, skip
 		if iface.Flags&net.FlagUp == 0 || iface.Flags&net.FlagLoopback != 0 {
 			continue
+		}
+
+		if flag == 2 {
+			flag = 1
 		}
 
 		log.Logger.Sugar().Infof("Interface %s", iface.Name)
@@ -34,7 +38,7 @@ func IfaceCheck() (bool, error) {
 			_, subnet, _ := net.ParseCIDR("10.150.0.0/16")
 			if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
 				if subnet.Contains(ipnet.IP) {
-					flag = false
+					flag = 0
 				}
 			}
 		}
