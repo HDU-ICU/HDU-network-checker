@@ -13,6 +13,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use: "checker",
 	Run: func(cmd *cobra.Command, args []string) {
+		log.Logger.Sugar().Infof("Version %s, Complete by ljcbaby", cmd.Version)
 		checker.BasicCheck()
 	},
 }

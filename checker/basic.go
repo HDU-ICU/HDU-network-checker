@@ -10,7 +10,6 @@ import (
 )
 
 func BasicCheck() {
-	log.Logger.Info("Complete by ljcbaby")
 	log.Logger.Info("Basic check start")
 
 	// Check if the IP address is in the campus network
@@ -66,8 +65,8 @@ func BasicCheck() {
 	aaa := 0
 	aaaAddr := net.IPAddr{IP: net.ParseIP("192.168.112.97")}
 
-	// Check connection to DNS 210.32.32.1
-	p, err = utils.Ping("210.32.32.1")
+	// Check connection to DNS 192.168.101.248
+	p, err = utils.Ping("192.168.101.248")
 	if err != nil {
 		log.Logger.Sugar().Errorf("Ping 失败：%v", err)
 	} else {
@@ -123,18 +122,29 @@ func BasicCheck() {
 	// ISP gateway check
 	switch api.ProductsId {
 	case "3": // 3: 联通
-		log.Logger.Warn("缺少联通网关信息")
+		p, err = utils.Ping("172.20.64.1")
+		if err != nil {
+			log.Logger.Sugar().Errorf("Ping 失败：%v", err)
+		} else {
+			if p == 4 {
+				log.Logger.Warn("无法连接到 联通网关172.20.64.1")
+			} else if p > 0 {
+				log.Logger.Warn("到 联通网关172.20.64.1 的连接存在丢包")
+			} else {
+				log.Logger.Info("连接到 联通网关172.20.64.1 正常")
+			}
+		}
 	case "4": // 4: 电信
 		p, err = utils.Ping("60.176.40.1")
 		if err != nil {
 			log.Logger.Sugar().Errorf("Ping 失败：%v", err)
 		} else {
 			if p == 4 {
-				log.Logger.Warn("无法连接到 电信网关")
+				log.Logger.Warn("无法连接到 电信网关60.176.40.1")
 			} else if p > 0 {
-				log.Logger.Warn("到 电信网关 的连接存在丢包")
+				log.Logger.Warn("到 电信网关60.176.40.1 的连接存在丢包")
 			} else {
-				log.Logger.Info("连接到 电信网关 正常")
+				log.Logger.Info("连接到 电信网关60.176.40.1 正常")
 			}
 		}
 	case "5": // 5: 移动
@@ -143,11 +153,11 @@ func BasicCheck() {
 			log.Logger.Sugar().Errorf("Ping 失败：%v", err)
 		} else {
 			if p == 4 {
-				log.Logger.Warn("无法连接到 移动网关")
+				log.Logger.Warn("无法连接到 移动网关10.106.0.1")
 			} else if p > 0 {
-				log.Logger.Warn("到 移动网关 的连接存在丢包")
+				log.Logger.Warn("到 移动网关10.106.0.1 的连接存在丢包")
 			} else {
-				log.Logger.Info("连接到 移动网关 正常")
+				log.Logger.Info("连接到 移动网关10.106.0.1 正常")
 			}
 		}
 	}
