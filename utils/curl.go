@@ -22,7 +22,7 @@ func Get(url string) (string, error) {
 	// Send the GET request
 	resp, err := client.Get(url)
 	if err != nil {
-		log.Logger.Sugar().Errorf("GET request failed: %v", err)
+		log.Logger.Sugar().Debugf("GET request failed: %v", err)
 		return "", fmt.Errorf("failed to perform GET request: %v", err)
 	}
 	defer resp.Body.Close()
