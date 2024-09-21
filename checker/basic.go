@@ -25,7 +25,7 @@ func BasicCheck() {
 			log.Logger.Warn("IP 地址不在校园网内，如有路由器请忽略")
 		case 2:
 			log.Logger.Error("未找到有效网卡，请检查网络连接")
-			os.Exit(0)
+			exit()
 		}
 	}
 
@@ -45,8 +45,18 @@ func BasicCheck() {
 		log.Logger.Sugar().Errorf("Ping 失败：%v", err)
 	} else {
 		if p == 4 {
-			log.Logger.Error("无法连接到 BAS，请检查IP配置或尝试重新进行物理连接")
-			os.Exit(0)
+			_, err := utils.Get("http://connect.rom.miui.com/generate_204")
+			if err != nil {
+				if strings.Contains(err.Error(), "204") {
+					log.Logger.Error("您可能不是在使用校园网，请检查网络连接")
+					exit()
+				} else {
+					log.Logger.Sugar().Errorf("Curl 请求失败：%v", err)
+				}
+			} else {
+				log.Logger.Error("无法连接到 BAS，请检查IP配置或尝试重新进行物理连接")
+				exit()
+			}
 		} else if p > 0 {
 			log.Logger.Warn("到 BAS 的连接存在丢包")
 		} else {
@@ -61,7 +71,7 @@ func BasicCheck() {
 	} else {
 		if p == 4 {
 			log.Logger.Error("无法连接到 深澜认证")
-			os.Exit(0)
+			exit()
 		} else if p > 0 {
 			log.Logger.Warn("到 深澜 的连接存在丢包")
 		} else {
@@ -103,7 +113,7 @@ func BasicCheck() {
 		if api.Error == "not_online_error" {
 			log.Logger.Error("深澜未认证，请打开下方链接进行认证")
 			log.Logger.Sugar().Errorf("认证页面地址：%s", baseUrl)
-			os.Exit(0)
+			exit()
 		} else {
 			log.Logger.Sugar().Infof("%s 已认证 %s，在线设备数 %s", api.UserName, api.ProductsName, api.OnlineDeviceTotal)
 		}
@@ -161,7 +171,7 @@ func BasicCheck() {
 			log.Logger.Error("无法连接到 阿里DNS主")
 			log.Logger.Error("请检查代拨上线情况，或尝试重新绑定")
 			log.Logger.Sugar().Errorf("认证页面地址：%s", baseUrl)
-			os.Exit(0)
+			exit()
 		} else if p > 0 {
 			log.Logger.Warn("到 阿里DNS主 的连接存在丢包")
 		} else {
@@ -182,8 +192,10 @@ func BasicCheck() {
 	}
 
 	log.Logger.Info("基本检查完成，无异常")
+	exit()
+}
 
-	// pause
+func exit() {
 	log.Logger.Info("按任意键退出")
 	fmt.Scanln()
 
