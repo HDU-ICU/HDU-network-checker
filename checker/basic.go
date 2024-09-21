@@ -72,33 +72,16 @@ func BasicCheck() {
 	aaa := 0
 	aaaAddr := net.IPAddr{IP: net.ParseIP("192.168.112.97")}
 
-	// Check connection to DNS 192.168.101.248
-	p, err = utils.Ping("192.168.101.248")
+	// Check DNS resolve
+	res, err := utils.Reslove("portal.hdu.edu.cn.", "210.32.32.1")
 	if err != nil {
-		log.Logger.Sugar().Errorf("Ping 失败：%v", err)
+		log.Logger.Sugar().Errorf("DNS 解析失败：%v", err)
 	} else {
-		if p == 4 {
-			log.Logger.Error("无法连接到 DNS")
+		if res.IP.String() != aaaAddr.IP.String() {
+			log.Logger.Error("DNS 解析错误")
 			aaa = 1
-		} else if p > 0 {
-			log.Logger.Warn("到 DNS 的连接存在丢包")
 		} else {
-			log.Logger.Info("连接到 主DNS 正常")
-		}
-	}
-
-	if aaa == 0 {
-		// Check DNS resolve
-		res, err := utils.Reslove("portal.hdu.edu.cn.", "210.32.32.1")
-		if err != nil {
-			log.Logger.Sugar().Errorf("DNS 解析失败：%v", err)
-		} else {
-			if res.IP.String() != aaaAddr.IP.String() {
-				log.Logger.Error("DNS 解析错误")
-				aaa = 1
-			} else {
-				log.Logger.Info("DNS 解析正常")
-			}
+			log.Logger.Info("DNS 解析正常")
 		}
 	}
 
