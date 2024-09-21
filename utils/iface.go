@@ -7,7 +7,7 @@ import (
 )
 
 func IfaceCheck() (int, error) {
-	flag := 2
+	flag := 0
 
 	interfaces, err := net.Interfaces()
 	if err != nil {
@@ -20,7 +20,7 @@ func IfaceCheck() (int, error) {
 			continue
 		}
 
-		if flag == 2 {
+		if flag == 0 {
 			flag = 1
 		}
 
@@ -38,7 +38,7 @@ func IfaceCheck() (int, error) {
 			_, subnet, _ := net.ParseCIDR("10.150.0.0/16")
 			if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
 				if subnet.Contains(ipnet.IP) {
-					flag = 0
+					flag += 1
 				}
 			}
 		}

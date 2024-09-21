@@ -20,12 +20,14 @@ func BasicCheck() {
 	} else {
 		switch iface {
 		case 0:
-			log.Logger.Info("IP 地址正确")
+			log.Logger.Error("未找到有效网卡，请检查网络连接")
+			exit()
 		case 1:
 			log.Logger.Warn("IP 地址不在校园网内，如有路由器请忽略")
 		case 2:
-			log.Logger.Error("未找到有效网卡，请检查网络连接")
-			exit()
+			log.Logger.Info("IP 地址正确")
+		default:
+			log.Logger.Warn("存在多个校园网 IP 地址，请检查网络连接")
 		}
 	}
 
