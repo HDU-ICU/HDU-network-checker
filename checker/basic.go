@@ -52,7 +52,7 @@ func BasicCheck() {
 				if strings.Contains(err.Error(), "ERR_204StatusNoContent") {
 					log.Logger.Error("您可能不是在使用校园网，请检查网络连接")
 					exit()
-				} else {
+				} else if !strings.Contains(err.Error(), "no such host") {
 					log.Logger.Sugar().Errorf("Curl 请求失败：%v", err)
 				}
 			} else {
