@@ -30,7 +30,7 @@ func Get(url string) (string, error) {
 
 	if resp.StatusCode != http.StatusOK {
 		if resp.StatusCode == http.StatusNoContent {
-			return "", fmt.Errorf("204")
+			return "", fmt.Errorf("ERR_204StatusNoContent")
 		}
 		return "", fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
