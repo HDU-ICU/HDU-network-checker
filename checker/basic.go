@@ -47,6 +47,7 @@ func BasicCheck() {
 		log.Logger.Sugar().Errorf("Ping 失败：%v", err)
 	} else {
 		if p == 4 {
+			log.Logger.Warn("无法连接到 BAS")
 			_, err := utils.Get("http://connect.rom.miui.com/generate_204")
 			if err != nil {
 				if strings.Contains(err.Error(), "ERR_204StatusNoContent") {
@@ -54,9 +55,12 @@ func BasicCheck() {
 					exit()
 				} else if !strings.Contains(err.Error(), "no such host") {
 					log.Logger.Sugar().Errorf("Curl 请求失败：%v", err)
+				} else {
+					log.Logger.Error("请检查IP配置或尝试重新进行物理连接")
+					exit()
 				}
 			} else {
-				log.Logger.Error("无法连接到 BAS，请检查IP配置或尝试重新进行物理连接")
+				log.Logger.Error("请检查IP配置或尝试重新进行物理连接")
 				exit()
 			}
 		} else if p > 0 {
