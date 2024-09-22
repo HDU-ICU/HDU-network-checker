@@ -88,6 +88,7 @@ func BasicCheck() {
 	res, err := utils.Reslove("portal.hdu.edu.cn.", "210.32.32.1")
 	if err != nil {
 		log.Logger.Sugar().Errorf("DNS 解析失败：%v", err)
+		aaa = 1
 	} else {
 		if res.IP.String() != aaaAddr.IP.String() {
 			log.Logger.Error("DNS 解析错误")
