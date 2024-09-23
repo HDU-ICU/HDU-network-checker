@@ -95,7 +95,7 @@ func BasicCheck() {
 		aaa = 1
 	} else {
 		if res.IP.String() != aaaAddr.IP.String() {
-			log.Logger.Error("DNS 解析错误")
+			log.Logger.Sugar().Errorf("DNS 解析错误：%v", res.IP.String())
 			aaa = 1
 		} else {
 			log.Logger.Info("DNS 解析正常")
