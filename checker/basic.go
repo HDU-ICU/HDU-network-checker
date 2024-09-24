@@ -53,11 +53,12 @@ func BasicCheck() {
 				if strings.Contains(err.Error(), "ERR_204StatusNoContent") {
 					log.Logger.Error("您可能不是在使用校园网，请检查网络连接")
 					exit()
-				} else if !strings.Contains(err.Error(), "no such host") {
-					log.Logger.Sugar().Errorf("Curl 请求失败：%v", err)
-				} else {
+				} else if strings.Contains(err.Error(), "no such host") {
+					log.Logger.Sugar().Debugf("Curl 请求失败：%v", err)
 					log.Logger.Error("请检查IP配置或尝试重新进行物理连接")
 					exit()
+				} else {
+					log.Logger.Sugar().Errorf("Curl 请求失败：%v", err)
 				}
 			} else {
 				log.Logger.Error("请检查IP配置或尝试重新进行物理连接")
@@ -91,7 +92,13 @@ func BasicCheck() {
 	// Check DNS resolve
 	res, err := utils.Reslove("portal.hdu.edu.cn.", "210.32.32.1")
 	if err != nil {
-		log.Logger.Sugar().Errorf("DNS 解析失败：%v", err)
+		if strings.Contains(err.Error(), "i/o timeout") ||
+			strings.Contains(err.Error(), "unreachable network") {
+			log.Logger.Sugar().Debugf("DNS 解析失败：%v", err)
+			log.Logger.Error("DNS 解析失败")
+		} else {
+			log.Logger.Sugar().Errorf("DNS 解析失败：%v", err)
+		}
 		aaa = 1
 	} else {
 		if res.IP.String() != aaaAddr.IP.String() {
